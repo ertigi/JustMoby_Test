@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40af903bb9e782f43938e349d13b1cc0, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: 
+  <PaletteColors>k__BackingField:
+  - <CubeId>k__BackingField: DarkRed
+    <Sprite>k__BackingField: {fileID: 21300000, guid: fe320c3c05f66244195977e4b6f6b771, type: 3}
+  - <CubeId>k__BackingField: Red
+    <Sprite>k__BackingField: {fileID: 21300000, guid: e28efdc97307fd64f9a1e93f9f6a7972, type: 3}
+  - <CubeId>k__BackingField: Orange
+    <Sprite>k__BackingField: {fileID: 21300000, guid: a42599323e3977b4c95859b93ca491a5, type: 3}
+  - <CubeId>k__BackingField: Yellow
+    <Sprite>k__BackingField: {fileID: 21300000, guid: fa65f85d36895f9428c5c6e2144bd53c, type: 3}
+  - <CubeId>k__BackingField: Green
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 5f1788d7d4a4a7743b08d1882866ba02, type: 3}
+  - <CubeId>k__BackingField: LightBlue
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 41c0158b7b503c248b1bcaed19559bf9, type: 3}
+  - <CubeId>k__BackingField: Blue
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 049e460559b2f0a47b958d79f7ef701e, type: 3}
+  - <CubeId>k__BackingField: Purple
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 51225fe780ec4ae4ba5064fbd761264e, type: 3}
+  - <CubeId>k__BackingField: LightGrey
+    <Sprite>k__BackingField: {fileID: 21300000, guid: ae47c68e901cd0c488389c3a750527e4, type: 3}
+  - <CubeId>k__BackingField: Brown
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 9b6ac879e6cb47c4f962a162764b109e, type: 3}
+  - <CubeId>k__BackingField: Black
+    <Sprite>k__BackingField: {fileID: 21300000, guid: aacd7a23f9ed22f429ce77674ab32756, type: 3}
+  - <CubeId>k__BackingField: DarkPurple
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 0005cd337e5098c47b3627de5f804ea0, type: 3}
+  - <CubeId>k__BackingField: Pink
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 1fa4fec903919cd43acf1807be685579, type: 3}
+  - <CubeId>k__BackingField: Turquoise
+    <Sprite>k__BackingField: {fileID: 21300000, guid: b022abe70b17178469445ec99ff4e6d6, type: 3}
+  - <CubeId>k__BackingField: LimeGreen
+    <Sprite>k__BackingField: {fileID: 21300000, guid: f6abe2ec91dddb44fb078f55945aa024, type: 3}
+  - <CubeId>k__BackingField: LightPurple
+    <Sprite>k__BackingField: {fileID: 21300000, guid: b235a757e65b05244a778b93c3575e79, type: 3}
+  - <CubeId>k__BackingField: LightTurquoise
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 5ffaa4e633a5e7947bc0faacfab7637d, type: 3}
+  - <CubeId>k__BackingField: Maroon
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 30863657b1f6e2a44b184eeb7ccb4927, type: 3}
+  - <CubeId>k__BackingField: LightYellow
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 740f4c18a94144d4e8a4df9cb0a424ab, type: 3}
+  - <CubeId>k__BackingField: Lilac
+    <Sprite>k__BackingField: {fileID: 21300000, guid: 0f7c92a93c096854aaf52cecd76d71e5, type: 3}
+  <MaxHorizontalOffsetNormalized>k__BackingField: 0.5
