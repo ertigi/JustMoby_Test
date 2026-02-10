@@ -11,6 +11,7 @@ public sealed class GameInstaller : MonoInstaller
 
         Container.Bind<PaletteViewModel>().AsSingle();
 
+        Container.Bind<DragDropController>().AsSingle();
         Container.Bind<PaletteController>().AsSingle();
 
         Container.BindInterfacesTo<GameBootstrapper>().AsSingle();

@@ -9,13 +9,15 @@ public sealed class PaletteScrollView : MonoBehaviour
     [SerializeField] private PaletteCubeItemView _itemPrefab;
 
     private List<PaletteCubeItemView> _cubeItemViews = new();
+    private DragDropController _dragDropController;
     private PaletteViewModel _vm;
 
     private readonly CompositeDisposable _cd = new();
 
     [Inject]
-    public void Construct(PaletteViewModel vm)
+    public void Construct(DragDropController dragDropController, PaletteViewModel vm)
     {
+        _dragDropController = dragDropController;
         _vm = vm;
     }
 
@@ -40,7 +42,7 @@ public sealed class PaletteScrollView : MonoBehaviour
         for (int i = 0; i < _vm.Cubes.Count; i++)
         {
             var view = Instantiate(_itemPrefab, _content);
-            view.Bind(i, _vm.Cubes[i]);
+            view.Bind(_dragDropController, i, _vm.Cubes[i]);
             _cubeItemViews.Add(view);
         }
     }

@@ -7,4 +7,5 @@ public class GameConfigSO : ScriptableObject
 {
     [field: SerializeField] public List<CubeColorConfig> PaletteColors { get; private set; } = new();
     [field: SerializeField] public float MaxHorizontalOffsetNormalized { get; private set; } = .5f;
+    [field: SerializeField] public Vector2 CubeSize { get; private set; } = new(130, 130);
 }

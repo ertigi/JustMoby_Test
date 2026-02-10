@@ -18,7 +18,7 @@ public sealed class PaletteController
 
         for (int i = 0; i < _config.PaletteColors.Count; i++)
         {
-            var descriptor = new CubeDescriptor(i, _config.PaletteColors[i].Sprite);
+            var descriptor = new CubeDescriptor(i, _config.PaletteColors[i].Sprite, _config.CubeSize);
             descriptors[i] = descriptor;
         }
 

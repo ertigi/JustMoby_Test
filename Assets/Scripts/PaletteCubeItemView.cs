@@ -1,19 +1,38 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
-public sealed class PaletteCubeItemView : MonoBehaviour
+public sealed class PaletteCubeItemView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private Image _image;
     [SerializeField] private RectTransform _rect;
-
+    private DragDropController _dragDrop;
     private CubeDescriptor _descriptor;
     private int _index;
 
-    public void Bind(int index, CubeDescriptor descriptor)
+    public void Bind(DragDropController dragDrop, int index, CubeDescriptor descriptor)
     {
+        _dragDrop = dragDrop;
         _index = index;
         _descriptor = descriptor;
 
         _image.sprite = descriptor.Sprite;
+        _rect.sizeDelta = descriptor.Size;
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        _dragDrop.BeginDragFromPalette(_descriptor);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        _dragDrop.EndDrag();
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        
     }
 }
