@@ -564,6 +564,7 @@ GameObject:
   - component: {fileID: 636598520}
   - component: {fileID: 636598519}
   - component: {fileID: 636598518}
+  - component: {fileID: 636598522}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -658,6 +659,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &636598522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636598517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 005796b3a35f2c44395952ea3cf453b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <TowerArea>k__BackingField: {fileID: 1257644260}
+  <TowerStackContainer>k__BackingField: {fileID: 1257644260}
 --- !u!1 &805334968
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +946,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230866677}
   m_CullTransparentMesh: 1
+--- !u!1 &1257644259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1257644260}
+  - component: {fileID: 1257644261}
+  m_Layer: 5
+  m_Name: Tower Placement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1257644260
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257644259}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1384999551}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -130, y: -130}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1257644261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257644259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 984ebf2de0a7717429d628f5c020ecda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _container: {fileID: 1257644260}
+  _cubePrefab: {fileID: 7485358235875563412, guid: a777e9f9561e1744b9fe4ea54ad65be1, type: 3}
 --- !u!1 &1334818013
 GameObject:
   m_ObjectHideFlags: 0
@@ -1050,6 +1115,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2056475594}
+  - {fileID: 1257644260}
   m_Father: {fileID: 636598521}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -1270,6 +1336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: cb39fcbd34487e041a8f18d7c84ebbca, type: 2}
+  _refs: {fileID: 636598522}
 --- !u!114 &1561802819
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,7 +5,8 @@ public sealed class DragVisualView : MonoBehaviour
 {
     [SerializeField] private RectTransform _rect;
     [SerializeField] private Image _image;
-    [SerializeField] private CanvasGroup _group;
+    [SerializeField] private CanvasGroup _canvasGroup;
+
 
     private void Awake()
     {
@@ -29,9 +30,9 @@ public sealed class DragVisualView : MonoBehaviour
 
     public void PlayMissAndHide()
     {
-        
+        Hide();
     }
 
-    public void Hide() => _group.alpha = 0f;
-    public void Show() => _group.alpha = 1f;
+    public void Hide() => _canvasGroup.alpha = 0f;
+    public void Show() => _canvasGroup.alpha = 1f;
 }

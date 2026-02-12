@@ -28,11 +28,8 @@ public sealed class PaletteCubeItemView : MonoBehaviour, IBeginDragHandler, IDra
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        _dragDrop.EndDrag();
+        _dragDrop.EndDrag(eventData.position);
     }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        
-    }
+    public void OnDrag(PointerEventData eventData) { }
 }

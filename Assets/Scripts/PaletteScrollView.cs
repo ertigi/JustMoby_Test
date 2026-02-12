@@ -7,12 +7,11 @@ public sealed class PaletteScrollView : MonoBehaviour
 {
     [SerializeField] private RectTransform _content;
     [SerializeField] private PaletteCubeItemView _itemPrefab;
-
     private List<PaletteCubeItemView> _cubeItemViews = new();
+    private CompositeDisposable _cd = new();
     private DragDropController _dragDropController;
     private PaletteViewModel _vm;
 
-    private readonly CompositeDisposable _cd = new();
 
     [Inject]
     public void Construct(DragDropController dragDropController, PaletteViewModel vm)

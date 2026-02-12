@@ -5,9 +5,8 @@ using Zenject;
 public sealed class DragVisualHostView : MonoBehaviour
 {
     [SerializeField] private DragVisualView _dragVisual;
-
     private DragDropController _dragDrop;
-    private readonly CompositeDisposable _cd = new();
+    private CompositeDisposable _cd = new();
 
     [Inject]
     public void Construct(DragDropController dragDrop)
