@@ -39,8 +39,8 @@ public sealed class TowerStackContainerView : MonoBehaviour
         if (_container == null || _cubePrefab == null)
             return;
 
-        for (int i = _container.childCount - 1; i >= 0; i--)
-            Destroy(_container.GetChild(i).gameObject);
+        for (int i = 0; i < _views.Count; i++)
+            _views[i].Destroy();
 
         _views.Clear();
 

@@ -18,11 +18,13 @@ public sealed class GameInstaller : MonoInstaller
         // services
         Container.Bind<TowerHeightLimitService>().AsSingle();
         Container.Bind<TowerPlacementService>().AsSingle();
+        Container.Bind<EllipseHitTestService>().AsSingle();
 
         // controllers
         Container.Bind<DragDropController>().AsSingle();
         Container.Bind<PaletteController>().AsSingle();
         Container.Bind<TowerController>().AsSingle();
+        Container.Bind<HoleController>().AsSingle();
 
         Container.BindInterfacesTo<GameBootstrapper>().AsSingle();
     }

@@ -12,6 +12,7 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
     private TowerCubeData _data;
     private Vector2 _startPos;
     private int _index;
+    private bool _isDestroyed;
 
     public void Bind(DragDropController dragDrop, int index, TowerCubeData data)
     {
@@ -37,6 +38,12 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
         _rect.DOAnchorPos(target, 0.25f).SetEase(Ease.OutBack);
     }
 
+    public void Destroy()
+    {
+        _isDestroyed = true;
+        Destroy(gameObject);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         _canvasGroup.alpha = 0;
@@ -46,17 +53,19 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        _canvasGroup.alpha = 1;
         _dragDrop.EndDrag(eventData.position);
 
+        if (_isDestroyed)
+            return;
+
+        _canvasGroup.alpha = 1;
+        
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _rect.parent as RectTransform, eventData.position, eventData.pressEventCamera, out var local);
 
-        if (this != null && _rect != null)
-        {
-            _rect.DOKill();
-            _rect.DOAnchorPos(_startPos, 0.15f).From(local).SetEase(Ease.OutCubic);
-        }
+        _rect.DOKill();
+        _rect.DOAnchorPos(_startPos, 0.15f).From(local).SetEase(Ease.OutCubic);
+
     }
 
     public void OnDrag(PointerEventData eventData) { }

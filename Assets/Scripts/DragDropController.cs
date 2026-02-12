@@ -8,11 +8,13 @@ public sealed class DragDropController
     public IReadOnlyReactiveProperty<bool> IsDragging => _isDragging;
     private DragVisualView _dragVisual;
     private TowerController _towerController;
+    private HoleController _holeController;
     private DragSession _currentDragSession;
 
-    public DragDropController(TowerController towerController)
+    public DragDropController(TowerController towerController, HoleController holeController)
     {
         _towerController = towerController;
+        _holeController = holeController;
     }
 
     public void RegisterDragVisual(DragVisualView dragVisual)
@@ -43,7 +45,7 @@ public sealed class DragDropController
         if (descriptor == null)
             return;
 
-        _currentDragSession = new(DragSourceType.Palette, descriptor, towerIndex);
+        _currentDragSession = new(DragSourceType.Tower, descriptor, towerIndex);
         _isDragging.Value = true;
 
         if (_dragVisual != null)
@@ -74,6 +76,11 @@ public sealed class DragDropController
         }
         else
         {
+            if (_holeController.IsDroppedIntoHole(screenPoint))
+            {
+                _towerController.RemoveAt(_currentDragSession.TowerIndex.Value);
+            }
+
             _dragVisual.Hide();
         }
 
