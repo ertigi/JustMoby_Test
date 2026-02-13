@@ -44,9 +44,13 @@ public sealed class TowerController
         if (!_placement.IsPointInsideArea(TowerArea, screenPoint))
             return false;
 
-        var anchoredPos = _placement.GetFirstPlacement(TowerArea, screenPoint);
+        Vector2 startPos = ScreenToTowerAreaLocal(screenPoint);
+        Vector2 finalPos = _placement.GetFirstPlacement(TowerArea, screenPoint);
 
-        _vm.Cubes.Add(new(descriptor, _config.CubeSize, anchoredPos, 0));
+        var towerCubeVM = new TowerCubeViewModel(descriptor, _config.CubeSize, startPos, 0);
+        _vm.Cubes.Add(towerCubeVM);
+
+        towerCubeVM.Position.Value = finalPos;
 
         _messageController.Enqueue(LocalizationMessageKey.CubePlaced);
 
@@ -79,9 +83,13 @@ public sealed class TowerController
             return false;
         }
 
-        var anchoredPos = _placement.GetStackPlacementForPalette(TowerArea, _vm.Cubes[^1].Position.Value, screenPoint, descriptor.Size);
+        Vector2 startPos = ScreenToTowerAreaLocal(screenPoint);
+        Vector2 finalPos = _placement.GetStackPlacementForPalette(TowerArea, _vm.Cubes[^1].Position.Value, screenPoint, descriptor.Size);
 
-        _vm.Cubes.Add(new(descriptor, _config.CubeSize, anchoredPos, _vm.Cubes.Count));
+        var towerCubeVM = new TowerCubeViewModel(descriptor, _config.CubeSize, startPos, _vm.Cubes.Count);
+        _vm.Cubes.Add(towerCubeVM);
+
+        towerCubeVM.Position.Value = finalPos;
 
         _messageController.Enqueue(LocalizationMessageKey.CubePlaced);
 
@@ -132,12 +140,18 @@ public sealed class TowerController
                 _vm.Cubes.RemoveAt(i);
                 continue;
             }
-            
+
             current.Position.Value = new Vector2(targetX, targetY);
             i++;
         }
     }
     
+    private Vector2 ScreenToTowerAreaLocal(Vector2 screenPoint)
+    {
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(TowerArea, screenPoint, null, out var local);
+        return local;
+    }
+
     private void SetNewIndexes()
     {
         for (int i = 0; i < _vm.Cubes.Count; i++)

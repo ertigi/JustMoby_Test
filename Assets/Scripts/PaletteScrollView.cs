@@ -41,7 +41,7 @@ public sealed class PaletteScrollView : MonoBehaviour
         for (int i = 0; i < _vm.Cubes.Count; i++)
         {
             var view = Instantiate(_itemPrefab, _content);
-            view.Bind(_dragDropController, i, _vm.Cubes[i]);
+            view.Bind(_dragDropController, _vm.Cubes[i]);
             _cubeItemViews.Add(view);
         }
     }

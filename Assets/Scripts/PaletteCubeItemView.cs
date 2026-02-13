@@ -9,12 +9,10 @@ public sealed class PaletteCubeItemView : MonoBehaviour, IBeginDragHandler, IDra
     [SerializeField] private RectTransform _rect;
     private DragDropController _dragDrop;
     private CubeDescriptor _descriptor;
-    private int _index;
 
-    public void Bind(DragDropController dragDrop, int index, CubeDescriptor descriptor)
+    public void Bind(DragDropController dragDrop, CubeDescriptor descriptor)
     {
         _dragDrop = dragDrop;
-        _index = index;
         _descriptor = descriptor;
 
         _image.sprite = descriptor.Sprite;

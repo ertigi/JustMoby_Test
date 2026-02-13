@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,9 +31,21 @@ public sealed class DragVisualView : MonoBehaviour
 
     public void PlayMissAndHide()
     {
-        Hide();
+        _rect.DOKill();
+        _rect.DOScale(0, .3f)
+            .SetEase(Ease.OutCubic)
+            .OnComplete(() =>
+            {
+                Hide();
+            });
+
     }
 
     public void Hide() => _canvasGroup.alpha = 0f;
-    public void Show() => _canvasGroup.alpha = 1f;
+    public void Show()
+    {
+        _rect.DOKill();
+        _canvasGroup.alpha = 1f;
+        _rect.localScale = Vector3.one;
+    }
 }

@@ -14,21 +14,9 @@ public sealed class DragVisualHostView : MonoBehaviour
         _dragDrop = dragDrop;
     }
 
-    private void OnEnable()
+    private void Awake()
     {
-        if (_dragVisual != null)
-            _dragDrop.RegisterDragVisual(_dragVisual);
-
-        _dragDrop.IsDragging
-            .DistinctUntilChanged()
-            .Subscribe(isDragging =>
-            {
-                if (isDragging)
-                    _dragVisual?.Show();
-                else
-                    _dragVisual?.Hide();
-            })
-            .AddTo(_cd);
+        _dragDrop.RegisterDragVisual(_dragVisual);
     }
 
     private void Update()
@@ -39,7 +27,7 @@ public sealed class DragVisualHostView : MonoBehaviour
         _dragVisual.FollowScreenPoint(Input.mousePosition);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         _cd.Clear();
         if (_dragVisual != null)

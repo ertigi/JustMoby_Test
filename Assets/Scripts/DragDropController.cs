@@ -40,6 +40,7 @@ public sealed class DragDropController
 
         _dragVisual.SetSprite(descriptor.Sprite);
         _dragVisual.SetSize(descriptor.Size);
+        _dragVisual.Show();
     }
 
     public void BeginDragFromTower(CubeDescriptor descriptor, int towerIndex)
@@ -54,6 +55,7 @@ public sealed class DragDropController
         {
             _dragVisual.SetSprite(descriptor.Sprite);
             _dragVisual.SetSize(descriptor.Size);
+            _dragVisual.Show();
         }
     }
 

@@ -8,15 +8,18 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
 {
     [SerializeField] private RectTransform _rect;
     [SerializeField] private Image _image;
+    [SerializeField] private CanvasGroup _canvasGroup;
 
     private CompositeDisposable _cd = new();
     private TowerCubeViewModel _towerCubeViewModel;
     private DragDropController _dragDrop;
     private Vector2 _startPos;
     private bool _isUnbind;
+    private bool _isInitialized;
 
     public void Bind(DragDropController dragDrop, TowerCubeViewModel towerCubeViewModel)
     {
+        _canvasGroup.alpha = 1;
         _towerCubeViewModel = towerCubeViewModel;
         _dragDrop = dragDrop;
 
@@ -24,15 +27,13 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
 
         _rect.sizeDelta = _towerCubeViewModel.Descriptor.Size;
 
+        _isInitialized = false;
+
         _towerCubeViewModel.Position
             .DistinctUntilChanged()
             .Subscribe(pos =>
             {
-                if (_rect == null)
-                    return;
-
-                _rect.DOKill();
-                _rect.DOAnchorPos(pos, 0.25f).SetEase(Ease.OutCubic);
+                PlayPlaceAnimation(pos);
             })
             .AddTo(_cd);
 
@@ -44,31 +45,32 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
         _cd.Clear();
         _towerCubeViewModel = null;
         _isUnbind = true;
-
-        if (_rect != null)
-            _rect.DOKill();
+        _rect.DOKill();
     }
 
-    public void PlayPlaceAnimation()
+    public void PlayPlaceAnimation(Vector2 position)
     {
-        if (_rect == null)
+        if (!_isInitialized)
+        {
+            _rect.anchoredPosition = position;
+            _isInitialized = true;
             return;
+        }
 
         _rect.DOKill();
-
-        var target = _rect.anchoredPosition;
-        _rect.anchoredPosition = target + Vector2.down * 15f;
-        _rect.DOAnchorPos(target, 0.25f).SetEase(Ease.OutBack);
+        _rect.DOAnchorPos(position, 0.25f).SetEase(Ease.OutCubic);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        _canvasGroup.alpha = 0;
         _startPos = _rect.anchoredPosition;
         _dragDrop.BeginDragFromTower(_towerCubeViewModel.Descriptor, _towerCubeViewModel.Index);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        _canvasGroup.alpha = 1;
         _dragDrop.EndDrag(eventData.position);
 
         if (_isUnbind)
