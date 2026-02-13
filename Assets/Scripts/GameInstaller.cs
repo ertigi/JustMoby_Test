@@ -4,7 +4,7 @@ using Zenject;
 public sealed class GameInstaller : MonoInstaller
 {
     [SerializeField] private GameConfigSO _gameConfig;
-    [SerializeField] private LocalizationConfig _localizationConfig;
+    [SerializeField] private LocalizationConfigSO _localizationConfig;
     [SerializeField] private SceneReferences _refs;
 
     public override void InstallBindings()
