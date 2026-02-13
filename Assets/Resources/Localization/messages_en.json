@@ -1,0 +1,8 @@
+{
+  "items": [
+    { "key": "CubePlaced", "value": "Block placed" },
+    { "key": "CubeTrashed", "value": "Block discarded" },
+    { "key": "CubeMissed", "value": "Miss!" },
+    { "key": "HeightLimitReached", "value": "Height limit reached" }
+  ]
+}

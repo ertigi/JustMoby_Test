@@ -1,0 +1,8 @@
+{
+  "items": [
+    { "key": "CubePlaced", "value": "Кубик установлен" },
+    { "key": "CubeTrashed", "value": "Кубик выброшен" },
+    { "key": "CubeMissed", "value": "Промах!" },
+    { "key": "HeightLimitReached", "value": "Достигнут предел высоты" }
+  ]
+}

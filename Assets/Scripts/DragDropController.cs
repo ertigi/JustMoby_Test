@@ -9,12 +9,14 @@ public sealed class DragDropController
     private DragVisualView _dragVisual;
     private TowerController _towerController;
     private HoleController _holeController;
+    private MessageController _messageController;
     private DragSession _currentDragSession;
 
-    public DragDropController(TowerController towerController, HoleController holeController)
+    public DragDropController(TowerController towerController, HoleController holeController, MessageController messageController)
     {
         _towerController = towerController;
         _holeController = holeController;
+        _messageController = messageController;
     }
 
     public void RegisterDragVisual(DragVisualView dragVisual)
@@ -70,9 +72,14 @@ public sealed class DragDropController
                 success = true;
 
             if (success)
+            {   
                 _dragVisual.Hide();
+            }
             else
+            {
                 _dragVisual.PlayMissAndHide();
+                _messageController.Enqueue(LocalizationMessageKey.CubeMissed);
+            }
         }
         else
         {

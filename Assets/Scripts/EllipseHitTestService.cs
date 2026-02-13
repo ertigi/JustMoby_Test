@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EllipseHitTestService
+public sealed class EllipseHitTestService
 {
     public bool ContainsPoint(RectTransform ellipseRect, Vector2 screenPoint)
     {

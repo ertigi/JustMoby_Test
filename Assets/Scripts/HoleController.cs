@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HoleController
+public sealed class HoleController
 {
     private readonly RectTransform _holeRect;
     private readonly EllipseHitTestService _ellipseHitTest;

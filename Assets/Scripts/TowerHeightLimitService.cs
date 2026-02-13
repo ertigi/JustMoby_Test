@@ -2,29 +2,25 @@ using UnityEngine;
 
 public sealed class TowerHeightLimitService
 {
-    public bool CanAddNext(RectTransform towerArea, RectTransform stackContainer, float nextCubeHeight)
+    public bool IsWithinHeightLimit(RectTransform towerArea, Vector2 lastCubeAnchoredPosition, Vector2 cubeSize)
     {
         var areaRect = towerArea.rect;
 
-        float currentTopY = GetCurrentTopY(stackContainer);
-        float nextTopY = currentTopY + nextCubeHeight;
+        float topEdge = lastCubeAnchoredPosition.y + cubeSize.y / 2f;
 
-        return nextTopY <= areaRect.yMax;
+        return topEdge <= areaRect.yMax;
     }
 
-    private float GetCurrentTopY(RectTransform stackContainer)
+    public bool IsStackedAboveLast(RectTransform towerArea, Vector2 lastCubeAnchoredPosition, Vector2 newCubeScreenPosition, Vector2 cubeSize)
     {
-        float top = 0f;
-        for (int i = 0; i < stackContainer.childCount; i++)
-        {
-            var child = stackContainer.GetChild(i) as RectTransform;
-            if (child == null)
-                continue;
+        Vector3 lastCubeWorldPos = towerArea.TransformPoint(lastCubeAnchoredPosition);
+        Vector3 lastCubeLocalInArea = towerArea.InverseTransformPoint(lastCubeWorldPos);
 
-            float childTop = child.anchoredPosition.y + child.rect.height;
-            if (childTop > top)
-                top = childTop;
-        }
-        return top;
+        float lastTopLocalY = lastCubeLocalInArea.y + cubeSize.y * 0.5f;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle( towerArea, newCubeScreenPosition, null, out Vector2 localPoint);
+        localPoint.y -= cubeSize.y * 0.5f;
+
+        return localPoint.y > lastTopLocalY;
     }
 }

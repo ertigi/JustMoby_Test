@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class TowerController
+public sealed class TowerController
 {
     private readonly GameConfigSO _config;
     private readonly TowerViewModel _vm;
     private readonly TowerPlacementService _placement;
     private readonly TowerHeightLimitService _heightLimit;
+    private readonly MessageController _messageController;
 
     public RectTransform TowerArea { get; }
     public RectTransform StackContainer { get; }
@@ -18,12 +19,14 @@ public class TowerController
         TowerViewModel vm,
         TowerPlacementService placement,
         TowerHeightLimitService heightLimit,
-        SceneReferences sceneReferences)
+        SceneReferences sceneReferences,
+        MessageController messageController)
     {
         _config = config;
         _vm = vm;
         _placement = placement;
         _heightLimit = heightLimit;
+        _messageController = messageController;
         TowerArea = sceneReferences.TowerArea;
         StackContainer = sceneReferences.TowerStackContainer;
     }
@@ -34,21 +37,20 @@ public class TowerController
             return false;
 
         if (_vm.HeightLocked.Value)
+        {
+            _messageController.Enqueue(LocalizationMessageKey.HeightLimitReached);
             return false;
+        }
 
         if (!_placement.IsPointInsideArea(TowerArea, screenPoint))
             return false;
-
-        if (!_heightLimit.CanAddNext(TowerArea, StackContainer, descriptor.Size.y))
-        {
-            LockHeight();
-            return false;
-        }
 
         var anchoredPos = _placement.GetFirstPlacement(TowerArea, screenPoint);
 
         var data = new TowerCubeData(descriptor, anchoredPos, descriptor.Size.x, descriptor.Size.y);
         _vm.Cubes.Add(data);
+
+        _messageController.Enqueue(LocalizationMessageKey.CubePlaced);
 
         return true;
     }
@@ -56,7 +58,10 @@ public class TowerController
     public bool TryStackFromPalette(CubeDescriptor descriptor, Vector2 screenPoint)
     {
         if (_vm.HeightLocked.Value)
+        {
+            _messageController.Enqueue(LocalizationMessageKey.HeightLimitReached);
             return false;
+        }
 
         if (_vm.Cubes.Count == 0)
             return false;
@@ -64,7 +69,13 @@ public class TowerController
         if (!_placement.IsPointOverExistingStackForPaletteCube(TowerArea, _vm.Cubes[^1].AnchoredPosition, screenPoint, descriptor.Size))
             return false;
 
-        if (!_heightLimit.CanAddNext(TowerArea, StackContainer, descriptor.Size.y))
+        if(!_heightLimit.IsStackedAboveLast(TowerArea, _vm.Cubes[^1].AnchoredPosition, screenPoint, descriptor.Size))
+        {
+            _messageController.Enqueue(LocalizationMessageKey.CubeMissed);
+            return false;
+        }
+
+        if (!_heightLimit.IsWithinHeightLimit(TowerArea, _vm.Cubes[^1].AnchoredPosition, descriptor.Size))
         {
             LockHeight();
             return false;
@@ -75,6 +86,8 @@ public class TowerController
         var data = new TowerCubeData(descriptor, anchoredPos, descriptor.Size.x, descriptor.Size.y);
         _vm.Cubes.Add(data);
 
+        _messageController.Enqueue(LocalizationMessageKey.CubePlaced);
+
         return true;
     }
 
@@ -84,6 +97,8 @@ public class TowerController
             return;
 
         _vm.Cubes.RemoveAt(index);
+
+        _messageController.Enqueue(LocalizationMessageKey.CubeTrashed);
 
         if (index > 0 && index < _vm.Cubes.Count)
         {
@@ -124,6 +139,7 @@ public class TowerController
 
     private void LockHeight()
     {
+        _messageController.Enqueue(LocalizationMessageKey.HeightLimitReached);
         _vm.HeightLocked.Value = true;
     }
 }
