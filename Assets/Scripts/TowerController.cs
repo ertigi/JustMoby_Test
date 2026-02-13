@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -12,7 +13,6 @@ public sealed class TowerController
     private readonly MessageController _messageController;
 
     public RectTransform TowerArea { get; }
-    public RectTransform StackContainer { get; }
 
     public TowerController(
         GameConfigSO config,
@@ -28,7 +28,6 @@ public sealed class TowerController
         _heightLimit = heightLimit;
         _messageController = messageController;
         TowerArea = sceneReferences.TowerArea;
-        StackContainer = sceneReferences.TowerStackContainer;
     }
 
     public bool TryPlaceFromPalette(CubeDescriptor descriptor, Vector2 screenPoint)
@@ -47,8 +46,7 @@ public sealed class TowerController
 
         var anchoredPos = _placement.GetFirstPlacement(TowerArea, screenPoint);
 
-        var data = new TowerCubeData(descriptor, anchoredPos, descriptor.Size.x, descriptor.Size.y);
-        _vm.Cubes.Add(data);
+        _vm.Cubes.Add(new(descriptor, _config.CubeSize, anchoredPos, 0));
 
         _messageController.Enqueue(LocalizationMessageKey.CubePlaced);
 
@@ -66,25 +64,24 @@ public sealed class TowerController
         if (_vm.Cubes.Count == 0)
             return false;
 
-        if (!_placement.IsPointOverExistingStackForPaletteCube(TowerArea, _vm.Cubes[^1].AnchoredPosition, screenPoint, descriptor.Size))
+        if (!_placement.IsPointOverExistingStackForPaletteCube(TowerArea, _vm.Cubes[^1].Position.Value, screenPoint, descriptor.Size))
             return false;
 
-        if(!_heightLimit.IsStackedAboveLast(TowerArea, _vm.Cubes[^1].AnchoredPosition, screenPoint, descriptor.Size))
+        if (!_heightLimit.IsStackedAboveLast(TowerArea, _vm.Cubes[^1].Position.Value, screenPoint, descriptor.Size))
         {
             _messageController.Enqueue(LocalizationMessageKey.CubeMissed);
             return false;
         }
 
-        if (!_heightLimit.IsWithinHeightLimit(TowerArea, _vm.Cubes[^1].AnchoredPosition, descriptor.Size))
+        if (!_heightLimit.IsWithinHeightLimit(TowerArea, _vm.Cubes[^1].Position.Value, descriptor.Size))
         {
             LockHeight();
             return false;
         }
 
-        var anchoredPos = _placement.GetStackPlacementForPalette(TowerArea, _vm.Cubes[^1].AnchoredPosition, screenPoint, descriptor.Size);
+        var anchoredPos = _placement.GetStackPlacementForPalette(TowerArea, _vm.Cubes[^1].Position.Value, screenPoint, descriptor.Size);
 
-        var data = new TowerCubeData(descriptor, anchoredPos, descriptor.Size.x, descriptor.Size.y);
-        _vm.Cubes.Add(data);
+        _vm.Cubes.Add(new(descriptor, _config.CubeSize, anchoredPos, _vm.Cubes.Count));
 
         _messageController.Enqueue(LocalizationMessageKey.CubePlaced);
 
@@ -97,44 +94,56 @@ public sealed class TowerController
             return;
 
         _vm.Cubes.RemoveAt(index);
-
         _messageController.Enqueue(LocalizationMessageKey.CubeTrashed);
 
-        if (index > 0 && index < _vm.Cubes.Count)
-        {
-            RebuildTower(index);
-        }
+        if (index != 0 && index < _vm.Cubes.Count)
+            ReflowFrom(index);
+
+        SetNewIndexes();
 
         if (_vm.HeightLocked.Value)
             _vm.HeightLocked.Value = false;
     }
 
-    private void RebuildTower(int removedIndex)
+    private void ReflowFrom(int startIndex)
     {
-        List<TowerCubeData> rebuildDatas = new();
+        if (_vm.Cubes.Count == 0)
+            return;
 
-        for (int i = 0; i < _vm.Cubes.Count; i++)
+        Vector2 size = _config.CubeSize;
+
+        int i = startIndex;
+        while (i < _vm.Cubes.Count)
         {
-            if (i < removedIndex)
-            {
-                rebuildDatas.Add(_vm.Cubes[i]);
-                continue;
-            }
+            var below = _vm.Cubes[i - 1];
+            var current = _vm.Cubes[i];
 
-            if (!_placement.IsPointOverExistingStackForTowerCube(rebuildDatas[^1].AnchoredPosition, _vm.Cubes[i].AnchoredPosition, _config.CubeSize))
+            float targetY = below.Position.Value.y + size.y;
+
+            float supportX = below.Position.Value.x;
+            float targetX = current.Position.Value.x;
+
+            float maxOffset = size.x * _config.MaxHorizontalOffsetNormalized;
+            float minSupportX = supportX - maxOffset;
+            float maxSupportX = supportX + maxOffset;
+
+            if (targetX < minSupportX || targetX > maxSupportX)
             {
                 _vm.Cubes.RemoveAt(i);
-                i--;
+                continue;
             }
-            else
-            {
-                var anchoredPos = _placement.GetStackPlacementForTower(rebuildDatas[^1].AnchoredPosition, _vm.Cubes[i].AnchoredPosition, _config.CubeSize);
-                rebuildDatas.Add(new TowerCubeData(_vm.Cubes[i].Descriptor, anchoredPos, _config.CubeSize.x, _config.CubeSize.y));
-            }
+            
+            current.Position.Value = new Vector2(targetX, targetY);
+            i++;
         }
-
-        _vm.Cubes.Clear();
-        _vm.Cubes.AddRange(rebuildDatas);
+    }
+    
+    private void SetNewIndexes()
+    {
+        for (int i = 0; i < _vm.Cubes.Count; i++)
+        {
+            _vm.Cubes[i].SetNewIndex(i);
+        }
     }
 
     private void LockHeight()

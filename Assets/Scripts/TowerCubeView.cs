@@ -1,4 +1,5 @@
 using DG.Tweening;
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,23 +8,45 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
 {
     [SerializeField] private RectTransform _rect;
     [SerializeField] private Image _image;
-    [SerializeField] private CanvasGroup _canvasGroup;
+
+    private CompositeDisposable _cd = new();
+    private TowerCubeViewModel _towerCubeViewModel;
     private DragDropController _dragDrop;
-    private TowerCubeData _data;
     private Vector2 _startPos;
-    private int _index;
-    private bool _isDestroyed;
+    private bool _isUnbind;
 
-    public void Bind(DragDropController dragDrop, int index, TowerCubeData data)
+    public void Bind(DragDropController dragDrop, TowerCubeViewModel towerCubeViewModel)
     {
+        _towerCubeViewModel = towerCubeViewModel;
         _dragDrop = dragDrop;
-        _index = index;
-        _data = data;
 
-        _image.sprite = data.Descriptor.Sprite;
+        _image.sprite = _towerCubeViewModel.Descriptor.Sprite;
 
-        _rect.sizeDelta = data.Descriptor.Size;
-        _rect.anchoredPosition = data.AnchoredPosition;
+        _rect.sizeDelta = _towerCubeViewModel.Descriptor.Size;
+
+        _towerCubeViewModel.Position
+            .DistinctUntilChanged()
+            .Subscribe(pos =>
+            {
+                if (_rect == null)
+                    return;
+
+                _rect.DOKill();
+                _rect.DOAnchorPos(pos, 0.25f).SetEase(Ease.OutCubic);
+            })
+            .AddTo(_cd);
+
+        _rect.anchoredPosition = _towerCubeViewModel.Position.Value;
+    }
+
+    public void Unbind()
+    {
+        _cd.Clear();
+        _towerCubeViewModel = null;
+        _isUnbind = true;
+
+        if (_rect != null)
+            _rect.DOKill();
     }
 
     public void PlayPlaceAnimation()
@@ -38,28 +61,19 @@ public sealed class TowerCubeView : MonoBehaviour, IBeginDragHandler, IDragHandl
         _rect.DOAnchorPos(target, 0.25f).SetEase(Ease.OutBack);
     }
 
-    public void Destroy()
-    {
-        _isDestroyed = true;
-        Destroy(gameObject);
-    }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
-        _canvasGroup.alpha = 0;
         _startPos = _rect.anchoredPosition;
-        _dragDrop.BeginDragFromTower(_data.Descriptor, _index);
+        _dragDrop.BeginDragFromTower(_towerCubeViewModel.Descriptor, _towerCubeViewModel.Index);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         _dragDrop.EndDrag(eventData.position);
 
-        if (_isDestroyed)
+        if (_isUnbind)
             return;
 
-        _canvasGroup.alpha = 1;
-        
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _rect.parent as RectTransform, eventData.position, eventData.pressEventCamera, out var local);
 
