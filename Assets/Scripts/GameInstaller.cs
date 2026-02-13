@@ -17,6 +17,7 @@ public sealed class GameInstaller : MonoInstaller
         Container.Bind<PaletteViewModel>().AsSingle();
         Container.Bind<TowerViewModel>().AsSingle();
         Container.Bind<MessageViewModel>().AsSingle();
+        Container.Bind<HoleViewModel>().AsSingle();
 
         // services
         Container.Bind<TowerHeightLimitService>().AsSingle();

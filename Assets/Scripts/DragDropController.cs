@@ -88,6 +88,7 @@ public sealed class DragDropController
             if (_holeController.IsDroppedIntoHole(screenPoint))
             {
                 _towerController.RemoveAt(_currentDragSession.TowerIndex.Value);
+                _holeController.SpawnHoleCube(_currentDragSession.Descriptor, screenPoint);
             }
 
             _dragVisual.Hide();
